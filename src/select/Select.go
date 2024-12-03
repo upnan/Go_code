@@ -35,17 +35,40 @@ func process(ch chan string) {
 	ch <- "process succeed"
 }
 
+// func main() {
+// 	ch := make(chan string)
+// 	go process(ch)
+// 	for {
+// 		time.Sleep(1000 * time.Millisecond)
+// 		select {
+// 		case s1 := <-ch:
+// 			fmt.Println(s1)
+// 			return
+// 		default: //出现default就不会出现死锁问题
+// 			fmt.Println("no")
+// 		}
+// 	}
+// }
+
+// 随机打印，若select上case全部就绪，则随机进行一个
+func server3(ch chan string) {
+	ch <- "server3"
+}
+func server4(ch chan string) {
+	ch <- "server4"
+}
+
 func main() {
-	ch := make(chan string)
-	go process(ch)
-	for {
-		time.Sleep(1000 * time.Millisecond)
-		select {
-		case s1 := <-ch:
-			fmt.Println(s1)
-			return
-		default:
-			fmt.Println("no")
-		}
+	ch3 := make(chan string)
+	ch4 := make(chan string)
+
+	go server3(ch3)
+	go server4(ch4)
+
+	select {
+	case s3 := <-ch3:
+		fmt.Println(s3)
+	case s4 := <-ch4:
+		fmt.Println(s4) //输出结果均是随机的
 	}
 }
