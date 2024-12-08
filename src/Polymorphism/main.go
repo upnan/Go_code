@@ -18,6 +18,13 @@ type TimeAndMaterial struct { //表示时间和材料类型
 	hourlyRate  int
 }
 
+//添加广告类型收入
+type Advertisement struct {
+	adName     string
+	CPC        int
+	noOfClicks int
+}
+
 // 方法计算并返回实际收入和收入来源
 // 不同项目类型利用不同的计算方式
 func (fb FixedBilling) calculate() int {
@@ -34,6 +41,14 @@ func (tm TimeAndMaterial) calculate() int {
 
 func (tm TimeAndMaterial) source() string {
 	return tm.projectName
+}
+
+//增加对应实现接口
+func (ad Advertisement) calculate() int {
+	return ad.CPC * ad.noOfClicks
+}
+func (ad Advertisement) source() string {
+	return ad.adName
 }
 
 /*由于FixedBilling和TimeAndMaterial结构都提供了Income接口的calculate()和source()方法的定义，
@@ -53,6 +68,9 @@ func main() {
 	project1 := FixedBilling{projectName: "Project 1", biddedAmount: 5000}
 	project2 := FixedBilling{projectName: "Project 2", biddedAmount: 10000}
 	project3 := TimeAndMaterial{projectName: "Project 3", noOfHours: 160, hourlyRate: 25}
-	incomeStreams := []Income{project1, project2, project3}
+	bannerAd := Advertisement{adName: "Banner Ad", CPC: 2, noOfClicks: 500}
+	popupAd := Advertisement{adName: "Popup Ad", CPC: 5, noOfClicks: 750}
+	//该函数无需改变，因为其实现了多态性
+	incomeStreams := []Income{project1, project2, project3, bannerAd, popupAd}
 	calculateNetIncome(incomeStreams)
 }
